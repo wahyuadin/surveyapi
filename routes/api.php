@@ -10,4 +10,7 @@ Route::prefix('surveys')->group(function () {
     Route::get('{survey_id}', [Controller::class, 'GetSurveyId']);
     Route::post('{id}/responses', [Controller::class, 'PostSurveiResponses']);
     Route::get('{id}/responses', [Controller::class, 'GetSurveiResponses']);
+    Route::prefix('question')->group(function () {
+        Route::post('{id}', [Controller::class, 'PostQuestion']);
+    });
 });

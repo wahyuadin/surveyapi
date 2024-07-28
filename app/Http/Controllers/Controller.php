@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\question;
 use App\Models\response;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -74,5 +75,26 @@ class Controller extends BaseController
 
     public function GetSurveiResponses($id) {
         return response()->json(response::showById($id));
+    }
+
+    public function PostQuestion(Request $request, $id) {
+        try {
+            $this->validate($request, [
+                'question'  => 'required',
+                'type'      => 'required',
+                'options'    => 'required|array',
+            ]);
+            $data = $request->all();
+            $data['survey_id']  = $id;
+
+            $query = question::create($data);
+            if ($query) {
+                return response()->json($query);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['error' => true, 'message' => $e->validator->errors()->all()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
+        }
     }
 }
